@@ -5,19 +5,25 @@ node("tc_agent") {
         // Output will be something like "go version go1.19 darwin/arm64"
         sh 'go version'
     }
-    
+
     stage('clone repository') {   checkout scm   }
 
-    // stage('build binary') {
-    //     withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin", "CGO_ENABLED=0"]) {
-    //     sh 'go build -o gogs'
-    //     } 
-    // }
-    // stage('unit tests') {
-    //    withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
-    //     sh 'go test ./...'
-    //     } 
-    // }
+    
+    stage("unit-test") {
+            steps {
+                echo 'UNIT TEST EXECUTION STARTED'
+                sh 'go test -v'
+            }
+        }
+    stage("build") {
+            steps {
+                echo 'BUILD EXECUTION STARTED'
+                sh 'go version'
+                sh 'go get ./...'
+                sh 'go run cmd/mage/main.go install'
+                sh 'go run cmd/mage/main.go build'
+            }
+        }
 
 
     // stage('deploy') {
