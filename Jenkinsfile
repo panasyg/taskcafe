@@ -10,19 +10,15 @@ node("tc_agent") {
 
     
     stage("unit-test") {
-            steps {
                 echo 'UNIT TEST EXECUTION STARTED'
                 sh 'go test -v'
-            }
         }
     stage("build") {
-            steps {
                 echo 'BUILD EXECUTION STARTED'
                 sh 'go version'
                 sh 'go get ./...'
                 sh 'go run cmd/mage/main.go install'
                 sh 'go run cmd/mage/main.go build'
-            }
         }
 
 
