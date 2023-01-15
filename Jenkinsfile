@@ -1,15 +1,12 @@
-node("agent01") {
+node("tc_agent") {
     def app
-    def root = tool type: 'go', name: '1.19.4'
+    def root = tool type: 'go', name: '1.15.1'
     withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
         // Output will be something like "go version go1.19 darwin/arm64"
         sh 'go version'
     }
-    stage('clone repository') {
-      
-
-        checkout scm
-    }
+    
+    stage('clone repository') {   checkout scm   }
 
     // stage('build binary') {
     //     withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin", "CGO_ENABLED=0"]) {
