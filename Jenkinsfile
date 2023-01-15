@@ -9,18 +9,21 @@ node("tc_agent") {
     stage('clone repository') {   checkout scm   }
 
     
-    stage('unit tests') {
+    stage('unit tests') 
+    {
        withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
         sh 'go test ./...'
         } 
     }
-    stage("build") {
-                echo 'BUILD EXECUTION STARTED'
-                sh 'go version'
-                sh 'go get ./...'
-                sh 'go run cmd/mage/main.go install'
-                sh 'go run cmd/mage/main.go build'
-        }
+
+    stage("build") 
+    {
+        echo 'BUILD EXECUTION STARTED'
+        sh 'go version'
+        sh 'go get ./...'
+        sh 'go run cmd/mage/main.go install'
+        sh 'go run cmd/mage/main.go build'
+    }
 
 
     // stage('deploy') {
