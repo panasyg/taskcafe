@@ -20,7 +20,6 @@ node("tc_agent") {
     {
         echo 'BUILD EXECUTION STARTED'
         sh 'go version'
-        sh 'go get ./...'
         sh 'go run cmd/mage/main.go install'
         sh 'go run cmd/mage/main.go build'
     }
