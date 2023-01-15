@@ -18,10 +18,14 @@ node("tc_agent") {
 
     stage("build") 
     {
+        withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+        sh 'go version'
         echo 'BUILD EXECUTION STARTED'
         sh 'go version'
         sh 'go run cmd/mage/main.go install'
         sh 'go run cmd/mage/main.go build'
+        } 
+        
     }
 
 
