@@ -16,6 +16,11 @@ node("tc_agent") {
         } 
     }
 
+    stage('Pre-build') {
+    sh "npm install -g yarn"
+    sh "yarn install"
+    }
+
     stage("build") 
     {
         withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
