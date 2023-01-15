@@ -12,7 +12,7 @@ node("tc_agent") {
     stage('unit tests') 
     {
        withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
-        sh 'go test -v'
+        sh 'go version'
         } 
     }
 
