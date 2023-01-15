@@ -9,10 +9,11 @@ node("tc_agent") {
     stage('clone repository') {   checkout scm   }
 
     
-    stage("unit-test") {
-                echo 'UNIT TEST EXECUTION STARTED'
-                sh 'go test -v'
-        }
+    stage('unit tests') {
+       withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+        sh 'go test ./...'
+        } 
+    }
     stage("build") {
                 echo 'BUILD EXECUTION STARTED'
                 sh 'go version'
