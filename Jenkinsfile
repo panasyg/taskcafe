@@ -1,6 +1,6 @@
 pipeline {
     agent { label 'tc_agent' }
-    tools { go 'go1.15.1' }
+    tools { go }
     environment {
         GO114MODULE = 'on'
         CGO_ENABLED = 0 
