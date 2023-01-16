@@ -6,16 +6,8 @@ node("tc_agent") {
         sh 'go version'
     }
 
-   
-
     stage('clone repository') {   checkout scm   }
-
-    stage('dependencies'){
-        env.NODEJS_HOME = "${tool 'Node 6.x'}"
-        env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-        sh 'npm --version'
-    }
-    
+   
     stage('unit tests') 
     {
        withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
@@ -25,17 +17,9 @@ node("tc_agent") {
 
     stage('Pre-build') 
     {
-        sh "sudo yum install curl -y"
-        sh "curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash " 
-        sh "source ~/.bashrc"
-        sh 'export NVM_DIR="$HOME/.nvm"'
-        sh "chmod u+x ~/.nvm/nvm.sh"
-        sh "~/.nvm/nvm.sh"
-        sh "chmod u+x ~/.bashrc"
-        sh "~/.nvm/nvm.sh install 14.9.0"
-        sh "~/.nvm/nvm.sh use 14.9.0"
-        sh "sudo ~/.bashrc"
-        sh "~/.nvm/versions/node/v14.9.0/bin/npm install -g yarn"
+        env.NODEJS_HOME = "${tool 'Node 6.x'}"
+        env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+        sh 'npm --version'
     }
 
     stage("build") 
@@ -49,7 +33,6 @@ node("tc_agent") {
         } 
         
     }
-
 
     // stage('deploy') {
     //     sh "ssh jenkins@10.26.0.57 rm -rf /home/jenkins/gogs/gogs"
