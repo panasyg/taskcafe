@@ -5,6 +5,11 @@ node("tc_agent") {
         // Output will be something like "go version go1.19 darwin/arm64"
         sh 'go version'
     }
+    env.NODEJS_HOME = "${tool 'node14.9.0'}"
+        env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+        sh 'npm --version'
+        sh 'npm install -g yarn'
+        sh 'yarn install'
 
     stage('clone repository') {   checkout scm   }
    
@@ -13,15 +18,6 @@ node("tc_agent") {
        withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
         sh 'go version'
         } 
-    }
-
-    stage('Pre-build') 
-    {
-        env.NODEJS_HOME = "${tool 'node14.9.0'}"
-        env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-        sh 'npm --version'
-        sh 'npm install -y yarn'
-        sh 'yarn install'
     }
 
     stage("build") 
