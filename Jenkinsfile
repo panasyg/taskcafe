@@ -27,7 +27,7 @@ node("tc_agent") {
         sh "chmod u+x ~/.bashrc"
         sh "~/.nvm/nvm.sh install 14.9.0"
         sh "~/.nvm/nvm.sh use 14.9.0"
-        sh "which npm"
+        sh "which nvm"
         sh "sudo ~/.bashrc"
         sh "npm install -g yarn"
     }
