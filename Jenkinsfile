@@ -16,9 +16,14 @@ node("tc_agent") {
         } 
     }
 
-    stage('Pre-build') {
-    sh "npm install -g yarn"
-    sh "yarn install"
+    stage('Pre-build') 
+    {
+        sh "sudo yum install curl -y"
+        sh "curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash " 
+        sh "source ~/.bashrc"
+        sh "nvm install 14.9.0"
+        sh "nvm use 14.9.0"
+        sh "npm install -g yarn"
     }
 
     stage("build") 
