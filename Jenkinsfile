@@ -21,6 +21,7 @@ node("tc_agent") {
         sh "sudo yum install curl -y"
         sh "curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash " 
         sh "source ~/.bashrc"
+        sh 'export NVM_DIR="$HOME/.nvm"'
         sh "chmod u+x ~/.nvm/nvm.sh"
         sh "~/.nvm/nvm.sh"
         sh "chmod u+x ~/.bashrc"
