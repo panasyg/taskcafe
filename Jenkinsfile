@@ -21,6 +21,7 @@ node("tc_agent") {
         env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
         sh 'npm --version'
         sh 'npm install -y yarn'
+        sh 'yarn install'
     }
 
     stage("build") 
@@ -36,7 +37,7 @@ node("tc_agent") {
     }
 
     // stage('deploy') {
-    //     sh "ssh jenkins@10.26.0.57 rm -rf /home/jenkins/gogs/gogs"
+    //     sh "ssh root@10.26.0.125 rm -rf /home/jenkins/gogs/gogs"
     //     sh "scp gogs jenkins@10.26.0.57:/home/jenkins/gogs/gogs"
     //     sh 'ssh jenkins@10.26.0.57 /home/jenkins/gogs/gogs web > /dev/null 2>&1 & '
 
