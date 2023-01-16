@@ -23,7 +23,6 @@ node("tc_agent") {
         sh "source ~/.bashrc"
         sh "chmod u+x ~/.nvm/nvm.sh"
         sh "~/.nvm/nvm.sh"
-        sh "~/.profile"
         sh "~/.bashrc"
         sh "nvm install 14.9.0"
         sh "nvm use 14.9.0"
