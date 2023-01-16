@@ -20,6 +20,7 @@ node("tc_agent") {
         env.NODEJS_HOME = "${tool 'Node 6.x'}"
         env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
         sh 'npm --version'
+        sh 'npm install -y yarn'
     }
 
     stage("build") 
