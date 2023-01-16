@@ -16,21 +16,6 @@ node("tc_agent") {
         } 
     }
 
-    stage('Pre-build') 
-    {
-        sh "sudo yum install curl -y"
-        sh "curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash " 
-        sh "source ~/.bashrc"
-        sh 'export NVM_DIR="$HOME/.nvm"'
-        sh "chmod u+x ~/.nvm/nvm.sh"
-        sh "~/.nvm/nvm.sh"
-        sh "chmod u+x ~/.bashrc"
-        sh "~/.nvm/nvm.sh install 14.9.0"
-        sh "~/.nvm/nvm.sh use 14.9.0"
-        sh "sudo ~/.bashrc"
-        sh "/root/.nvm/versions/node/v14.9.0/bin/npm install -g yarn"
-    }
-
     stage("build") 
     {
         withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
