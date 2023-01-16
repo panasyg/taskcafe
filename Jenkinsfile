@@ -17,7 +17,7 @@ node("tc_agent") {
 
     stage('Pre-build') 
     {
-        env.NODEJS_HOME = "${tool 'Node 6.x'}"
+        env.NODEJS_HOME = "${tool 'node14.9.0'}"
         env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
         sh 'npm --version'
         sh 'npm install -y yarn'
