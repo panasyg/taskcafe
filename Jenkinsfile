@@ -35,11 +35,11 @@ node("tc_agent") {
 
     stage('deploy') {
         sh "ssh root@10.26.0.125 rm -rf /dist/taskcafe"
-        sh "scp /var jenkins@10.26.0.57:/home/jenkins/gogs/gogs"
-        sh 'ssh jenkins@10.26.0.57 /home/jenkins/gogs/gogs web > /dev/null 2>&1 & '
+        sh "scp /var/lib/jenkins/tc_ppl/dist/jenkins root@10.26.0.77:/dist/"
+        sh 'ssh root@10.26.0.125 /dist/taskcafe web --config cfg.toml > /dev/null 2>&1 & '
 
         sh "ssh root@10.26.0.77 rm -rf /dist/taskcafe"
-        sh "scp gogs jenkins@10.26.0.71:/home/jenkins/gogs/gogs"
-        sh 'ssh jenkins@10.26.0.71 /home/jenkins/gogs/gogs web > /dev/null 2>&1 & '
+        sh "scp /var/lib/jenkins/tc_ppl/dist/jenkins root@10.26.0.77:/dist/"
+        sh 'ssh root@10.26.0.77 /dist/taskcafe web --config cfg.toml > /dev/null 2>&1 & '
         }
     }
