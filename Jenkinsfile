@@ -1,4 +1,4 @@
-node("tc_agent") {
+node("tc_ag") {
     def app
     def root = tool type: 'go', name: '1.15.1'
     withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
