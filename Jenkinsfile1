@@ -1,0 +1,41 @@
+pipeline {
+    agent { label 'tc_agent' }
+    tools {
+        go 'go1.14'
+    }
+    environment {
+        GO114MODULE = 'on'
+        CGO_ENABLED = 0 
+        GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
+    }
+
+    stages {
+        stage("unit-test") {
+            steps {
+                echo 'UNIT TEST EXECUTION STARTED'
+                sh 'go test -v'
+            }
+        }
+        stage("build") {
+            steps {
+                echo 'BUILD EXECUTION STARTED'
+                sh 'go version'
+                sh 'go get ./...'
+                sh 'go run cmd/mage/main.go install'
+                sh 'go run cmd/mage/main.go build'
+            }
+        }
+        stage('deliver') {
+            agent { label 'tc_agent' }
+            steps {
+                sh "ssh jenkins@10.26.0.57 rm -rf /home/jenkins/gogs/gogs"
+                sh "scp gogs jenkins@10.26.0.57:/home/jenkins/gogs/gogs"
+                sh 'ssh jenkins@10.26.0.57 /home/jenkins/gogs/gogs web > /dev/null 2>&1 & '
+
+                sh "ssh jenkins@10.26.0.71 rm -rf /home/jenkins/gogs/gogs"
+                sh "scp gogs jenkins@10.26.0.71:/home/jenkins/gogs/gogs"
+                sh 'ssh jenkins@10.26.0.71 /home/jenkins/gogs/gogs web > /dev/null 2>&1 & '
+                }
+            }
+        }
+    }
