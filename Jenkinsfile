@@ -35,11 +35,11 @@ node("tc_ag") {
 
     stage('deploy') {
         sh "ssh root@10.26.0.125 rm -rf /dist/taskcafe"
-        sh "scp /var/lib/jenkins/tc_piln/dist/jenkins root@10.26.0.77:/dist/"
+        sh "scp /var/lib/jenkins/tc_piln/workspace/dist/jenkins root@10.26.0.77:/dist/"
         sh 'ssh root@10.26.0.125 /dist/taskcafe web --config cfg.toml > /dev/null 2>&1 & '
 
         sh "ssh root@10.26.0.77 rm -rf /dist/taskcafe"
-        sh "scp /var/lib/jenkins/tc_piln/dist/jenkins root@10.26.0.77:/dist/"
+        sh "scp /var/lib/jenkins/tc_piln/workspace/dist/jenkins root@10.26.0.77:/dist/"
         sh 'ssh root@10.26.0.77 /dist/taskcafe web --config cfg.toml > /dev/null 2>&1 & '
         }
     }
