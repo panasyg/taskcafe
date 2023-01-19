@@ -34,12 +34,12 @@ node("tc_ag") {
     // }
 
     stage('deploy') {
-        sh "ssh  root@10.26.0.125 ps aux |grep taskcafe | awk -F\' \' \'{print \$2}\' | xargs kill 2>/dev/null"
+        sh "ssh  root@10.26.0.125 ps aux |grep taskcafe | awk \'{print $2}\' | xargs kill 2>/dev/null"
         sh "ssh  root@10.26.0.125 rm -rf /dist/taskcafe"
         sh "scp  /var/lib/jenkins/workspace/tc_piln/dist/taskcafe root@10.26.0.77:/dist/"
         sh 'ssh  root@10.26.0.125 /dist/taskcafe web --config /dist/cfg.toml > /dev/null 2>&1 & '
 
-        sh "ssh  root@10.26.0.77 ps aux |grep taskcafe | awk -F\' \' \'{print \$2}\' | xargs kill 2>/dev/null"
+        sh "ssh  root@10.26.0.77 ps aux |grep taskcafe | awk \'{print $2}\' | xargs kill 2>/dev/null"
         sh "ssh  root@10.26.0.77 rm -rf /dist/taskcafe"
         sh "scp  /var/lib/jenkins/workspace/tc_piln/dist/taskcafe root@10.26.0.77:/dist/"
         sh 'ssh  root@10.26.0.77 /dist/taskcafe web --config /dist/cfg.toml > /dev/null 2>&1 & '
