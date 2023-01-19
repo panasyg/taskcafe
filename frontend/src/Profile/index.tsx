@@ -31,7 +31,7 @@ const Projects = () => {
   const [updateUserPassword] = useUpdateUserPasswordMutation();
   const { loading, data, refetch } = useMeQuery();
   useEffect(() => {
-    document.title = 'Profile | Taskcafé';
+    document.title = 'Profile | Taskcofe';
   }, []);
   if (!user) {
     return null;
