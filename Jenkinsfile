@@ -34,14 +34,12 @@ node("tc_ag") {
     // }
 
     stage('deploy') {
-        sh "ssh  root@10.26.0.125 sudo pkill -f taskcafe"
         sh "ssh  root@10.26.0.125 rm -rf /dist/taskcafe"
-        sh "scp  /var/lib/jenkins/workspace/tc_piln/dist/taskcafe root@10.26.0.77:/dist/"
-        sh 'ssh  root@10.26.0.125 /dist/taskcafe web --config /dist/cfg.toml > /dev/null 2>&1 & '
+        sh "scp  /var/lib/jenkins/workspace/tc_piln/dist/taskcafe root@10.26.0.77:/dist/taskcafe"
+        sh 'ssh  root@10.26.0.125 daemonize /dist/taskcafe web --config /dist/cfg.toml'
 
-        sh "ssh  root@10.26.0.77  pkill -f taskcafe "
         sh "ssh  root@10.26.0.77 rm -rf /dist/taskcafe"
-        sh "scp  /var/lib/jenkins/workspace/tc_piln/dist/taskcafe root@10.26.0.77:/dist/"
-        sh 'ssh  root@10.26.0.77 /dist/taskcafe web --config /dist/cfg.toml > /dev/null 2>&1 & '
+        sh "scp  /var/lib/jenkins/workspace/tc_piln/dist/taskcafe root@10.26.0.77:/dist/taskcafe"
+        sh 'ssh  root@10.26.0.77 daemonize /dist/taskcafe web --config /dist/cfg.toml'
         }
     }
