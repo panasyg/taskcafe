@@ -19,19 +19,19 @@ node("tc_ag") {
         } 
     }
 
-    stage("build") 
-    {
-        withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+    // stage("build") 
+    // {
+    //     withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
        
-        sh 'go version'
-        echo 'BUILD EXECUTION STARTED'
-        sh 'go version' 
-        env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-        sh 'go run cmd/mage/main.go install'
-        sh 'go run cmd/mage/main.go build'
-        } 
+    //     sh 'go version'
+    //     echo 'BUILD EXECUTION STARTED'
+    //     sh 'go version' 
+    //     env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+    //     sh 'go run cmd/mage/main.go install'
+    //     sh 'go run cmd/mage/main.go build'
+    //     } 
         
-    }
+    // }
 
     stage('deploy') {
         sh "ssh  root@10.26.0.125 rm -rf /dist/taskcafe"
