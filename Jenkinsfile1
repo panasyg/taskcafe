@@ -2,7 +2,7 @@ pipeline {
     agent { label 'tc_agent' }
 
     environment {
-    dockerimagename = "panasyg/taskacafe"
+    dockerimagename = "panasyg/taskcafe"
     dockerImage = ""
   }
 
@@ -10,7 +10,7 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        git 'https://github.com/shazforiot/nodeapp_test.git'
+        git 'https://github.com/panasyg/taskcafe.git'
       }
     }
 
