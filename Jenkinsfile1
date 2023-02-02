@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'tc_agent' }
+    agent { label 'tc_ag' }
 
     environment {
     dockerimagename = "panasyg/taskcafe"
