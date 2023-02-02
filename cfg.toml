@@ -1,0 +1,17 @@
+cat <<EOF > cfg.toml
+
+[database]
+host = 'postgres-service'
+name = 'taskcafe'
+user = 'taskcafe'
+password = 'taskcafe_test'
+port = '5432'
+
+[job]
+broker = 'redis://redis-master:6379'
+store = 'redis://redis-master:6379'
+
+[message]
+queue = 'redis-master:6379'
+
+EOF
