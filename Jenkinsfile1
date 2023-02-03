@@ -1,8 +1,10 @@
 pipeline {
     agent { label 'tc_ag' }
 
-    tools { go '1.15.1' }
-    tools {nodejs "node14.9.0"}
+    tools { 
+            go '1.15.1' ;
+            nodejs "node14.9.0"
+          }
 
     environment {
     dockerimagename = "panasyg/taskcafe"
