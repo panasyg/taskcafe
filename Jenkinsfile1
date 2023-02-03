@@ -23,6 +23,8 @@ pipeline {
       steps {
           sh 'npm install -g yarn'
           yarn 'install'
+          sh 'go run cmd/mage/main.go install'
+          sh 'go run cmd/mage/main.go build'
         }
     }
 
