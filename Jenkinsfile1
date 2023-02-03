@@ -1,6 +1,8 @@
 pipeline {
     agent { label 'tc_ag' }
 
+    def root = tool type: 'go', name: '1.15.1'
+
     environment {
     dockerimagename = "panasyg/taskcafe"
     dockerImage = ""
@@ -9,16 +11,21 @@ pipeline {
   stages {
 
 
-    stage('Test source code') {
-      steps {
-        echo "Starting tesing"
-        echo "Test passed succesfully"
-      }
-    }
     stage('Checkout Source') {
       steps {
         echo "current build number: ${currentBuild.number}"
         git 'https://github.com/panasyg/taskcafe.git'
+      }
+    }
+
+    stage('Test source code') {
+      steps {
+        echo "Starting tesing"
+        
+          withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+          sh 'go version'
+        } 
+        echo "Test passed succesfully"
       }
     }
 
