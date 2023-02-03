@@ -9,15 +9,7 @@ pipeline {
     dockerimagename = "panasyg/taskcafe"
     dockerImage = ""
   }
-
-  stages {
-    stage('Checkout Source') {
-      steps {
-        echo "current build number: ${currentBuild.number}"
-        git 'https://github.com/panasyg/taskcafe.git'
-      }
-    }
-
+  
     stage('Test source code') {
       steps {
           sh 'npm install -g yarn'
