@@ -4,7 +4,6 @@ import List, { ListCards } from 'shared/components/List';
 import Card from 'shared/components/Card';
 import CardComposer from 'shared/components/CardComposer';
 import AddList from 'shared/components/AddList';
-import log from 'loglevel';
 import {
   isPositionChanged,
   getSortedDraggables,
@@ -112,16 +111,24 @@ function shouldStatusFilter(task: Task, filter: TaskStatusFilter) {
         const TODAY = REFERENCE.clone().startOf('day');
         return completedAt.isSame(TODAY, 'd');
       case TaskSince.YESTERDAY:
-        const YESTERDAY = REFERENCE.clone().subtract(1, 'day').startOf('day');
+        const YESTERDAY = REFERENCE.clone()
+          .subtract(1, 'day')
+          .startOf('day');
         return completedAt.isSameOrAfter(YESTERDAY, 'd');
       case TaskSince.ONE_WEEK:
-        const ONE_WEEK = REFERENCE.clone().subtract(7, 'day').startOf('day');
+        const ONE_WEEK = REFERENCE.clone()
+          .subtract(7, 'day')
+          .startOf('day');
         return completedAt.isSameOrAfter(ONE_WEEK, 'd');
       case TaskSince.TWO_WEEKS:
-        const TWO_WEEKS = REFERENCE.clone().subtract(14, 'day').startOf('day');
+        const TWO_WEEKS = REFERENCE.clone()
+          .subtract(14, 'day')
+          .startOf('day');
         return completedAt.isSameOrAfter(TWO_WEEKS, 'd');
       case TaskSince.THREE_WEEKS:
-        const THREE_WEEKS = REFERENCE.clone().subtract(21, 'day').startOf('day');
+        const THREE_WEEKS = REFERENCE.clone()
+          .subtract(21, 'day')
+          .startOf('day');
         return completedAt.isSameOrAfter(THREE_WEEKS, 'd');
       default:
         return true;
@@ -144,7 +151,6 @@ interface SimpleProps {
   onCardMemberClick: OnCardMemberClick;
   onCardLabelClick: () => void;
   cardLabelVariant: CardLabelVariant;
-  isPublic?: boolean;
   taskStatusFilter?: TaskStatusFilter;
   taskMetaFilters?: TaskMetaFilters;
   taskSorting?: TaskSorting;
@@ -182,7 +188,6 @@ const SimpleLists: React.FC<SimpleProps> = ({
   onExtraMenuOpen,
   onCardMemberClick,
   taskStatusFilter = initTaskStatusFilter,
-  isPublic = false,
   taskMetaFilters = initTaskMetaFilters,
   taskSorting = initTaskSorting,
 }) => {
@@ -196,14 +201,14 @@ const SimpleLists: React.FC<SimpleProps> = ({
     let beforeDropDraggables: Array<DraggableElement> | null = null;
 
     if (isList) {
-      const droppedGroup = taskGroups.find((taskGroup) => taskGroup.id === draggableId);
+      const droppedGroup = taskGroups.find(taskGroup => taskGroup.id === draggableId);
       if (droppedGroup) {
         droppedDraggable = {
           id: draggableId,
           position: droppedGroup.position,
         };
         beforeDropDraggables = getSortedDraggables(
-          taskGroups.map((taskGroup) => {
+          taskGroups.map(taskGroup => {
             return { id: taskGroup.id, position: taskGroup.position };
           }),
         );
@@ -227,13 +232,13 @@ const SimpleLists: React.FC<SimpleProps> = ({
       }
     } else {
       const curTaskGroup = taskGroups.findIndex(
-        (taskGroup) => taskGroup.tasks.findIndex((task) => task.id === draggableId) !== -1,
+        taskGroup => taskGroup.tasks.findIndex(task => task.id === draggableId) !== -1,
       );
       let targetTaskGroup = curTaskGroup;
       if (!isSameList) {
-        targetTaskGroup = taskGroups.findIndex((taskGroup) => taskGroup.id === destination.droppableId);
+        targetTaskGroup = taskGroups.findIndex(taskGroup => taskGroup.id === destination.droppableId);
       }
-      const droppedTask = taskGroups[curTaskGroup].tasks.find((task) => task.id === draggableId);
+      const droppedTask = taskGroups[curTaskGroup].tasks.find(task => task.id === draggableId);
 
       if (droppedTask) {
         droppedDraggable = {
@@ -241,7 +246,7 @@ const SimpleLists: React.FC<SimpleProps> = ({
           position: droppedTask.position,
         };
         beforeDropDraggables = getSortedDraggables(
-          taskGroups[targetTaskGroup].tasks.map((task) => {
+          taskGroups[targetTaskGroup].tasks.map(task => {
             return { id: task.id, position: task.position };
           }),
         );
@@ -263,9 +268,6 @@ const SimpleLists: React.FC<SimpleProps> = ({
             id: destination.droppableId,
           },
         };
-        log.debug(
-          `action=move taskId=${droppedTask.id} source=${source.droppableId} dest=${destination.droppableId} oldPos=${droppedTask.position} newPos=${newPosition}`,
-        );
         onTaskDrop(newTask, droppedTask.taskGroup.id);
       }
     }
@@ -282,7 +284,7 @@ const SimpleLists: React.FC<SimpleProps> = ({
       <BoardWrapper>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable direction="horizontal" type="column" droppableId="root">
-            {(provided) => (
+            {provided => (
               <Container {...provided.droppableProps} ref={provided.innerRef}>
                 {taskGroups
                   .slice()
@@ -290,15 +292,14 @@ const SimpleLists: React.FC<SimpleProps> = ({
                   .map((taskGroup: TaskGroup, index: number) => {
                     return (
                       <Draggable draggableId={taskGroup.id} key={taskGroup.id} index={index}>
-                        {(columnDragProvided) => (
+                        {columnDragProvided => (
                           <Droppable type="tasks" droppableId={taskGroup.id}>
                             {(columnDropProvided, snapshot) => (
                               <List
                                 name={taskGroup.name}
-                                onOpenComposer={(id) => setCurrentComposer(id)}
+                                onOpenComposer={id => setCurrentComposer(id)}
                                 isComposerOpen={currentComposer === taskGroup.id}
-                                onSaveName={(name) => onChangeTaskGroupName(taskGroup.id, name)}
-                                isPublic={isPublic}
+                                onSaveName={name => onChangeTaskGroupName(taskGroup.id, name)}
                                 ref={columnDragProvided.innerRef}
                                 wrapperProps={columnDragProvided.draggableProps}
                                 headerProps={columnDragProvided.dragHandleProps}
@@ -310,8 +311,8 @@ const SimpleLists: React.FC<SimpleProps> = ({
                                 <ListCards ref={columnDropProvided.innerRef} {...columnDropProvided.droppableProps}>
                                   {taskGroup.tasks
                                     .slice()
-                                    .filter((t) => shouldStatusFilter(t, taskStatusFilter))
-                                    .filter((t) => shouldMetaFilter(t, taskMetaFilters))
+                                    .filter(t => shouldStatusFilter(t, taskStatusFilter))
+                                    .filter(t => shouldMetaFilter(t, taskMetaFilters))
                                     .sort((a: any, b: any) => a.position - b.position)
                                     .sort((a: any, b: any) => sortTasks(a, b, taskSorting))
                                     .map((task: Task, taskIndex: any) => {
@@ -322,14 +323,12 @@ const SimpleLists: React.FC<SimpleProps> = ({
                                           index={taskIndex}
                                           isDragDisabled={taskSorting.type !== TaskSortingType.NONE}
                                         >
-                                          {(taskProvided) => {
+                                          {taskProvided => {
                                             return (
                                               <Card
                                                 toggleDirection={toggleDirection}
                                                 toggleLabels={toggleLabels}
-                                                isPublic={isPublic}
                                                 labelVariant={cardLabelVariant}
-                                                watched={task.watched}
                                                 wrapperProps={{
                                                   ...taskProvided.draggableProps,
                                                   ...taskProvided.dragHandleProps,
@@ -349,12 +348,12 @@ const SimpleLists: React.FC<SimpleProps> = ({
                                                 complete={task.complete ?? false}
                                                 taskGroupID={taskGroup.id}
                                                 description=""
-                                                labels={task.labels.map((label) => label.projectLabel)}
+                                                labels={task.labels.map(label => label.projectLabel)}
                                                 dueDate={
-                                                  task.dueDate.at
+                                                  task.dueDate
                                                     ? {
                                                         isPastDue: false,
-                                                        formattedDate: dayjs(task.dueDate.at).format('MMM D, YYYY'),
+                                                        formattedDate: dayjs(task.dueDate).format('MMM D, YYYY'),
                                                       }
                                                     : undefined
                                                 }
@@ -364,7 +363,6 @@ const SimpleLists: React.FC<SimpleProps> = ({
                                                   onTaskClick(task);
                                                 }}
                                                 checklists={task.badges && task.badges.checklist}
-                                                comments={task.badges && task.badges.comments}
                                                 onCardMemberClick={onCardMemberClick}
                                                 onContextMenu={onQuickEditorOpen}
                                               />
@@ -379,7 +377,7 @@ const SimpleLists: React.FC<SimpleProps> = ({
                                       onClose={() => {
                                         setCurrentComposer('');
                                       }}
-                                      onCreateCard={(name) => {
+                                      onCreateCard={name => {
                                         onCreateTask(taskGroup.id, name);
                                       }}
                                       isOpen
@@ -393,18 +391,16 @@ const SimpleLists: React.FC<SimpleProps> = ({
                       </Draggable>
                     );
                   })}
+                <AddList
+                  onSave={listName => {
+                    onCreateTaskGroup(listName);
+                  }}
+                />
                 {provided.placeholder}
               </Container>
             )}
           </Droppable>
         </DragDropContext>
-        {!isPublic && (
-          <AddList
-            onSave={(listName) => {
-              onCreateTaskGroup(listName);
-            }}
-          />
-        )}
       </BoardWrapper>
     </BoardContainer>
   );

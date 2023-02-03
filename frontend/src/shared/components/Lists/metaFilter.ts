@@ -24,7 +24,7 @@ export default function shouldMetaFilter(task: Task, filters: TaskMetaFilters) {
       isFiltered = shouldFilter(!(task.dueDate && task.dueDate !== null));
     }
     if (task.dueDate) {
-      const taskDueDate = dayjs(task.dueDate.at);
+      const taskDueDate = dayjs(task.dueDate);
       const today = dayjs();
       let start;
       let end;
@@ -36,31 +36,61 @@ export default function shouldMetaFilter(task: Task, filters: TaskMetaFilters) {
           isFiltered = shouldFilter(taskDueDate.isSame(today, 'day'));
           break;
         case DueDateFilterType.TOMORROW:
-          isFiltered = shouldFilter(taskDueDate.isBefore(today.clone().add(1, 'day').endOf('day')));
+          isFiltered = shouldFilter(
+            taskDueDate.isBefore(
+              today
+                .clone()
+                .add(1, 'day')
+                .endOf('day'),
+            ),
+          );
           break;
         case DueDateFilterType.THIS_WEEK:
-          start = today.clone().weekday(0).startOf('day');
-          end = today.clone().weekday(6).endOf('day');
+          start = today
+            .clone()
+            .weekday(0)
+            .startOf('day');
+          end = today
+            .clone()
+            .weekday(6)
+            .endOf('day');
           isFiltered = shouldFilter(taskDueDate.isBetween(start, end));
           break;
         case DueDateFilterType.NEXT_WEEK:
-          start = today.clone().weekday(0).add(7, 'day').startOf('day');
-          end = today.clone().weekday(6).add(7, 'day').endOf('day');
+          start = today
+            .clone()
+            .weekday(0)
+            .add(7, 'day')
+            .startOf('day');
+          end = today
+            .clone()
+            .weekday(6)
+            .add(7, 'day')
+            .endOf('day');
           isFiltered = shouldFilter(taskDueDate.isBetween(start, end));
           break;
         case DueDateFilterType.ONE_WEEK:
           start = today.clone().startOf('day');
-          end = today.clone().add(7, 'day').endOf('day');
+          end = today
+            .clone()
+            .add(7, 'day')
+            .endOf('day');
           isFiltered = shouldFilter(taskDueDate.isBetween(start, end));
           break;
         case DueDateFilterType.TWO_WEEKS:
           start = today.clone().startOf('day');
-          end = today.clone().add(14, 'day').endOf('day');
+          end = today
+            .clone()
+            .add(14, 'day')
+            .endOf('day');
           isFiltered = shouldFilter(taskDueDate.isBetween(start, end));
           break;
         case DueDateFilterType.THREE_WEEKS:
           start = today.clone().startOf('day');
-          end = today.clone().add(21, 'day').endOf('day');
+          end = today
+            .clone()
+            .add(21, 'day')
+            .endOf('day');
           isFiltered = shouldFilter(taskDueDate.isBetween(start, end));
           break;
         default:
@@ -74,7 +104,7 @@ export default function shouldMetaFilter(task: Task, filters: TaskMetaFilters) {
     }
     for (const member of filters.members) {
       if (task.assigned) {
-        if (task.assigned.findIndex((m) => m.id === member.id) !== -1) {
+        if (task.assigned.findIndex(m => m.id === member.id) !== -1) {
           isFiltered = ShouldFilter.VALID;
         }
       }
@@ -86,7 +116,7 @@ export default function shouldMetaFilter(task: Task, filters: TaskMetaFilters) {
     }
     for (const label of filters.labels) {
       if (task.labels) {
-        if (task.labels.findIndex((m) => m.projectLabel.id === label.id) !== -1) {
+        if (task.labels.findIndex(m => m.projectLabel.id === label.id) !== -1) {
           isFiltered = ShouldFilter.VALID;
         }
       }

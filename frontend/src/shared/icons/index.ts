@@ -1,15 +1,7 @@
 import Cross from './Cross';
 import Cog from './Cog';
-import Cogs from './Cogs';
-import Circle from './Circle';
-import CircleSolid from './CircleSolid';
-import UserCircle from './UserCircle';
-import Bubble from './Bubble';
 import ArrowDown from './ArrowDown';
-import CheckCircleOutline from './CheckCircleOutline';
-import Briefcase from './Briefcase';
 import ListUnordered from './ListUnordered';
-import ChevronRight from './ChevronRight';
 import Dot from './Dot';
 import CaretDown from './CaretDown';
 import Eye from './Eye';
@@ -110,13 +102,5 @@ export {
   Dot,
   ArrowDown,
   CaretRight,
-  CheckCircleOutline,
-  Briefcase,
   DotCircle,
-  ChevronRight,
-  Circle,
-  CircleSolid,
-  Bubble,
-  UserCircle,
-  Cogs,
 };

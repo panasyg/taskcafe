@@ -13,4 +13,9 @@ const Question = ({ size, color }: Props) => {
   );
 };
 
+Question.defaultProps = {
+  size: 16,
+  color: '#000',
+};
+
 export default Question;

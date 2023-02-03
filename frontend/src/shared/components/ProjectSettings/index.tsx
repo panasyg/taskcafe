@@ -38,17 +38,12 @@ export const ListSeparator = styled.hr`
 `;
 
 type Props = {
-  publicOn: null | string;
   onDeleteProject: () => void;
-  onToggleProjectVisible: (visible: boolean) => void;
 };
-const ProjectSettings: React.FC<Props> = ({ publicOn, onDeleteProject, onToggleProjectVisible }) => {
+const ProjectSettings: React.FC<Props> = ({ onDeleteProject }) => {
   return (
     <>
       <ListActionsWrapper>
-        <ListActionItemWrapper onClick={() => onToggleProjectVisible(publicOn === null)}>
-          <ListActionItem>{`Make ${publicOn === null ? 'public' : 'private'}`}</ListActionItem>
-        </ListActionItemWrapper>
         <ListActionItemWrapper onClick={() => onDeleteProject()}>
           <ListActionItem>Delete Project</ListActionItem>
         </ListActionItemWrapper>
@@ -132,18 +127,5 @@ const DeleteConfirm: React.FC<DeleteConfirmProps> = ({ description, deletedItems
   );
 };
 
-type PublicConfirmProps = {
-  onConfirm: () => void;
-};
-
-const PublicConfirm: React.FC<PublicConfirmProps> = ({ onConfirm }) => {
-  return (
-    <ConfirmWrapper>
-      <ConfirmDescription>Public projects can be accessed by anyone with a link to the project.</ConfirmDescription>
-      <ConfirmDeleteButton onClick={() => onConfirm()}>Make public</ConfirmDeleteButton>
-    </ConfirmWrapper>
-  );
-};
-
-export { DeleteConfirm, PublicConfirm };
+export { DeleteConfirm };
 export default ProjectSettings;

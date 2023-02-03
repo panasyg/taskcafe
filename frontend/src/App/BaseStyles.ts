@@ -126,8 +126,4 @@ export default createGlobalStyle`
   }
 
   ${mixin.placeholderColor(color.textLight)}
-
-  .picker-hidden {
-    display: none;
-  }
 `;

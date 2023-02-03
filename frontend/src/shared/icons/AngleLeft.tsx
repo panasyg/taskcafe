@@ -16,4 +16,9 @@ const AngleLeft = ({ size, color }: Props) => {
   );
 };
 
+AngleLeft.defaultProps = {
+  size: 16,
+  color: '#000',
+};
+
 export default AngleLeft;

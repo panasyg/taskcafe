@@ -1,16 +1,18 @@
 package commands
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/RichardKnop/machinery/v1"
+	"github.com/RichardKnop/machinery/v1/config"
 	queueLog "github.com/RichardKnop/machinery/v1/log"
 	"github.com/jmoiron/sqlx"
-	"github.com/jordanknott/taskcafe/internal/config"
 	repo "github.com/jordanknott/taskcafe/internal/db"
-	"github.com/jordanknott/taskcafe/internal/jobs"
+	"github.com/jordanknott/taskcafe/internal/notification"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -26,11 +28,13 @@ func newWorkerCmd() *cobra.Command {
 			log.SetFormatter(Formatter)
 			log.SetLevel(log.InfoLevel)
 
-			appConfig, err := config.GetAppConfig()
-			if err != nil {
-				log.Panic(err)
-			}
-			db, err := sqlx.Connect("postgres", config.GetDatabaseConfig().GetDatabaseConnectionUri())
+			connection := fmt.Sprintf("user=%s password=%s host=%s dbname=%s sslmode=disable",
+				viper.GetString("database.user"),
+				viper.GetString("database.password"),
+				viper.GetString("database.host"),
+				viper.GetString("database.name"),
+			)
+			db, err := sqlx.Connect("postgres", connection)
 			if err != nil {
 				log.Panic(err)
 			}
@@ -39,19 +43,25 @@ func newWorkerCmd() *cobra.Command {
 			db.SetConnMaxLifetime(5 * time.Minute)
 			defer db.Close()
 
+			var cnf = &config.Config{
+				Broker:        viper.GetString("queue.broker"),
+				DefaultQueue:  "machinery_tasks",
+				ResultBackend: viper.GetString("queue.store"),
+				AMQP: &config.AMQPConfig{
+					Exchange:     "machinery_exchange",
+					ExchangeType: "direct",
+					BindingKey:   "machinery_task",
+				},
+			}
+
 			log.Info("starting task queue server instance")
-			jobConfig := appConfig.Job.GetJobConfig()
-			server, err := machinery.NewServer(&jobConfig)
+			server, err := machinery.NewServer(cnf)
 			if err != nil {
 				// do something with the error
 			}
-			queueLog.Set(&jobs.MachineryLogger{})
+			queueLog.Set(&notification.MachineryLogger{})
 			repo := *repo.NewRepository(db)
-			redisClient, err := appConfig.MessageQueue.GetMessageQueueClient()
-			if err != nil {
-				return err
-			}
-			jobs.RegisterTasks(server, repo, appConfig, redisClient)
+			notification.RegisterTasks(server, repo)
 
 			worker := server.NewWorker("taskcafe_worker", 10)
 			log.Info("starting task queue worker")

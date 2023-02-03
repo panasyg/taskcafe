@@ -16,4 +16,9 @@ const Cog = ({ size, color }: Props) => {
   );
 };
 
+Cog.defaultProps = {
+  size: 16,
+  color: '#000',
+};
+
 export default Cog;

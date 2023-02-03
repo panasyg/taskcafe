@@ -9,7 +9,6 @@ import {
 import { Link } from 'react-router-dom';
 import Input from 'shared/components/Input';
 import theme from 'App/ThemeStyles';
-import polling from 'shared/utils/polling';
 
 const FilterSearch = styled(Input)`
   margin: 0;
@@ -159,7 +158,7 @@ const TeamProjects: React.FC<TeamProjectsProps> = ({ teamID }) => {
   const { loading, data } = useGetTeamQuery({
     variables: { teamID },
     fetchPolicy: 'cache-and-network',
-    pollInterval: polling.TEAM_PROJECTS,
+    pollInterval: 3000,
   });
   if (data) {
     return (

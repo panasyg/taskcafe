@@ -4,23 +4,19 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/RichardKnop/machinery/v1"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/cors"
-	"github.com/go-redis/redis/v8"
 	"github.com/jmoiron/sqlx"
 	log "github.com/sirupsen/logrus"
 
 	"os"
 	"path/filepath"
 
-	"github.com/jordanknott/taskcafe/internal/config"
 	"github.com/jordanknott/taskcafe/internal/db"
 	"github.com/jordanknott/taskcafe/internal/frontend"
 	"github.com/jordanknott/taskcafe/internal/graph"
-	"github.com/jordanknott/taskcafe/internal/jobs"
 	"github.com/jordanknott/taskcafe/internal/logger"
+	"github.com/jordanknott/taskcafe/internal/utils"
 )
 
 // FrontendHandler serves an embed React client through chi
@@ -64,12 +60,12 @@ func (h FrontendHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // TaskcafeHandler contains all the route handlers
 type TaskcafeHandler struct {
-	repo      db.Repository
-	AppConfig config.AppConfig
+	repo   db.Repository
+	jwtKey []byte
 }
 
 // NewRouter creates a new router for chi
-func NewRouter(dbConnection *sqlx.DB, redisClient *redis.Client, jobServer *machinery.Server, appConfig config.AppConfig) (chi.Router, error) {
+func NewRouter(dbConnection *sqlx.DB, emailConfig utils.EmailConfig, jwtKey []byte) (chi.Router, error) {
 	formatter := new(log.TextFormatter)
 	formatter.TimestampFormat = "02-01-2006 15:04:05"
 	formatter.FullTimestamp = true
@@ -84,19 +80,8 @@ func NewRouter(dbConnection *sqlx.DB, redisClient *redis.Client, jobServer *mach
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	r.Use(cors.Handler(cors.Options{
-		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://*", "http://*"},
-		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Cookie", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: true,
-		MaxAge:           300, // Maximum value not ignored by any of major browsers
-	}))
-
 	repository := db.NewRepository(dbConnection)
-	taskcafeHandler := TaskcafeHandler{*repository, appConfig}
+	taskcafeHandler := TaskcafeHandler{*repository, jwtKey}
 
 	var imgServer = http.FileServer(http.Dir("./uploads/"))
 	r.Group(func(mux chi.Router) {
@@ -105,19 +90,12 @@ func NewRouter(dbConnection *sqlx.DB, redisClient *redis.Client, jobServer *mach
 		mux.Mount("/uploads/", http.StripPrefix("/uploads/", imgServer))
 		mux.Post("/auth/confirm", taskcafeHandler.ConfirmUser)
 		mux.Post("/auth/register", taskcafeHandler.RegisterUser)
-		mux.Get("/settings", taskcafeHandler.PublicSettings)
-		mux.Post("/logger", taskcafeHandler.HandleClientLog)
 	})
-	auth := AuthenticationMiddleware{*repository}
-	jobQueue := jobs.JobQueue{
-		Repository: *repository,
-		AppConfig:  appConfig,
-		Server:     jobServer,
-	}
+	auth := AuthenticationMiddleware{jwtKey}
 	r.Group(func(mux chi.Router) {
 		mux.Use(auth.Middleware)
 		mux.Post("/users/me/avatar", taskcafeHandler.ProfileImageUpload)
-		mux.Mount("/graphql", graph.NewHandler(*repository, appConfig, jobQueue, redisClient))
+		mux.Handle("/graphql", graph.NewHandler(*repository, emailConfig))
 	})
 
 	frontend := FrontendHandler{staticPath: "build", indexPath: "index.html"}

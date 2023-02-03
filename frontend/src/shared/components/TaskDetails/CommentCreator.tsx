@@ -1,9 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { usePopup } from 'shared/components/PopupMenu';
-import useOnOutsideClick from 'shared/hooks/onOutsideClick';
-import { At, Paperclip, Smile } from 'shared/icons';
-import { Picker, Emoji } from 'emoji-mart';
-import Task from 'shared/icons/Task';
 import {
   CommentTextArea,
   CommentEditorContainer,
@@ -13,6 +8,11 @@ import {
   CommentProfile,
   CommentInnerWrapper,
 } from './Styles';
+import { usePopup } from 'shared/components/PopupMenu';
+import useOnOutsideClick from 'shared/hooks/onOutsideClick';
+import { At, Paperclip, Smile } from 'shared/icons';
+import { Picker, Emoji } from 'emoji-mart';
+import Task from 'shared/icons/Task';
 
 type CommentCreatorProps = {
   me?: TaskUser;
@@ -21,12 +21,10 @@ type CommentCreatorProps = {
   message?: string | null;
   onCreateComment: (message: string) => void;
   onCancelEdit?: () => void;
-  disabled?: boolean;
 };
 
 const CommentCreator: React.FC<CommentCreatorProps> = ({
   me,
-  disabled = false,
   message,
   onMemberProfile,
   onCreateComment,
@@ -69,10 +67,9 @@ const CommentCreator: React.FC<CommentCreatorProps> = ({
       )}
       <CommentEditorContainer>
         <CommentTextArea
-          $showCommentActions={showCommentActions}
+          showCommentActions={showCommentActions}
           placeholder="Write a comment..."
           ref={$comment}
-          disabled={disabled}
           value={comment}
           onChange={e => setComment(e.currentTarget.value)}
           onFocus={() => {
@@ -94,11 +91,12 @@ const CommentCreator: React.FC<CommentCreatorProps> = ({
                 <div ref={$emojiCart}>
                   <Picker
                     onClick={emoji => {
+                      console.log(emoji);
                       if ($comment && $comment.current) {
-                        const textToInsert = `${emoji.colons} `;
-                        const cursorPosition = $comment.current.selectionStart;
-                        const textBeforeCursorPosition = $comment.current.value.substring(0, cursorPosition);
-                        const textAfterCursorPosition = $comment.current.value.substring(
+                        let textToInsert = `${emoji.colons} `;
+                        let cursorPosition = $comment.current.selectionStart;
+                        let textBeforeCursorPosition = $comment.current.value.substring(0, cursorPosition);
+                        let textAfterCursorPosition = $comment.current.value.substring(
                           cursorPosition,
                           $comment.current.value.length,
                         );

@@ -10,7 +10,6 @@ query getProjects {
   }
   projects {
     id
-    shortId
     name
     team {
       id

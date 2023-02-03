@@ -18,34 +18,27 @@
     <img alt="Docker pulls" src="https://img.shields.io/docker/pulls/taskcafe/taskcafe" />
   </a>
 </p>
-
-  <p align="center">
-    <a href="https://github.com/JordanKnott/taskcafe/issues/new?assignees=&labels=&template=bug_report.md&title=">Report Bug</a>
-    ·
-    <a href="https://github.com/JordanKnott/taskcafe/discussions/new?category=ideas">Request Feature</a>
-     ·
-    <a href="https://github.com/JordanKnott/taskcafe/discussions/new?category=q-a">Ask a Question</a>
-  </p>
 <p align="center">
 Was this project useful? Please consider <a href="https://www.buymeacoffee.com/jordanknott">donating</a> to help me improve it!
 </p>
-<p align="center">
- This project is still in <strong>alpha development</strong></p>
+
+**Please note that this project is still in active development. Some options may not work yet! For updates on development, join the Discord server**
 
 ![Taskcafe](./.github/taskcafe_preview.png)
 
 ## Features
 
-The following features have been implemented:
+Currently Taskcafe only offers basic task tracking through a Kanban board.
 
-- Manage tasks through a Kanban board interface (set due dates, labels, add checklists)
-- View all your current assigned tasks through the My Tasks view
-- Personal projects
-- Task comments and activity
+Currently you can do the following to tasks:
 
-This project is still in active development, so some options may not be fully implemented yet.
-
-**For updates on development, join the [Discord server](https://discord.gg/JkQDruh).**
+- Task sorting & filtering
+- Add colors & named labels
+- Add due dates
+- Descriptions written in Markdown
+- Assign members
+- Checklists
+- Mark tasks as complete
 
 For a list of planned features, check out the [Roadmap](https://github.com/JordanKnott/taskcafe/wiki/Roadmap)!
 

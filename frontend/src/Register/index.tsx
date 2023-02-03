@@ -17,7 +17,6 @@ const UsersRegister = () => {
         <Register
           registered={registered}
           onSubmit={(data, setComplete, setError) => {
-            let isRedirected = false;
             if (data.password !== data.password_confirm) {
               setError('password', { type: 'error', message: 'Passwords must match' });
               setError('password_confirm', { type: 'error', message: 'Passwords must match' });
@@ -36,26 +35,23 @@ const UsersRegister = () => {
                   },
                 }),
               })
-                .then(async (x) => {
+                .then(async x => {
                   const response = await x.json();
                   const { setup } = response;
+                  console.log(response);
                   if (setup) {
                     history.replace(`/confirm?confirmToken=xxxx`);
-                    isRedirected = true;
                   } else if (params.confirmToken) {
                     history.replace(`/confirm?confirmToken=${params.confirmToken}`);
-                    isRedirected = true;
                   } else {
                     setRegistered(true);
                   }
                 })
-                .catch((e) => {
+                .catch(() => {
                   toast('There was an issue trying to register');
                 });
             }
-            if (!isRedirected) {
-              setComplete(true);
-            }
+            setComplete(true);
           }}
         />
       </LoginWrapper>

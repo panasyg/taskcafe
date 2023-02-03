@@ -72,9 +72,6 @@ export const HeaderName = styled(TextareaAutosize)`
   box-shadow: none;
   font-weight: 600;
   margin: -4px 0;
-  &:disabled {
-    opacity: 1;
-  }
 
   letter-spacing: normal;
   word-spacing: normal;

@@ -14,4 +14,9 @@ const Bin = ({ size, color }: Props) => {
   );
 };
 
+Bin.defaultProps = {
+  size: 16,
+  color: '#000',
+};
+
 export default Bin;

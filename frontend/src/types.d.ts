@@ -59,13 +59,8 @@ type ChecklistBadge = {
   total: number;
 };
 
-type CommentsBadge = {
-  total: number;
-  unread: boolean;
-};
 type TaskBadges = {
   checklist?: ChecklistBadge | null;
-  comments?: CommentsBadge | null;
 };
 
 type TaskActivityData = {
@@ -103,14 +98,11 @@ type TaskComment = {
 
 type Task = {
   id: string;
-  shortId: string;
   taskGroup: InnerTaskGroup;
   name: string;
-  watched?: boolean;
   badges?: TaskBadges;
   position: number;
-  hasTime?: boolean;
-  dueDate: { at?: string; notifications?: Array<{ id: string; period: number; duration: string }> };
+  dueDate?: string;
   complete?: boolean;
   completedAt?: string | null;
   labels: TaskLabel[];

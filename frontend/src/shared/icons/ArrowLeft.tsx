@@ -17,4 +17,10 @@ const ArrowLeft = ({ width, height, color }: Props) => {
   );
 };
 
+ArrowLeft.defaultProps = {
+  width: 16,
+  height: 16,
+  color: '#000',
+};
+
 export default ArrowLeft;

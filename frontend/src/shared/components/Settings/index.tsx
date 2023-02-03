@@ -1,23 +1,23 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { User } from 'shared/icons';
+import Input from 'shared/components/Input';
 import Button from 'shared/components/Button';
 import { useForm } from 'react-hook-form';
-import ControlledInput from 'shared/components/ControlledInput';
 
-const PasswordInput = styled(ControlledInput)`
+const PasswordInput = styled(Input)`
   margin-top: 30px;
   margin-bottom: 0;
 `;
 
-const UserInfoInput = styled(ControlledInput)`
+const UserInfoInput = styled(Input)`
   margin-top: 30px;
   margin-bottom: 0;
 `;
 
 const FormError = styled.span`
   font-size: 12px;
-  color: ${(props) => props.theme.colors.warning};
+  color: ${props => props.theme.colors.warning};
 `;
 
 const ProfileContainer = styled.div`
@@ -42,7 +42,7 @@ const AvatarMask = styled.div<{ background: string }>`
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: ${(props) => props.background};
+  background: ${props => props.background};
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -152,12 +152,12 @@ const TabNavItemButton = styled.button<{ active: boolean }>`
   width: 100%;
   position: relative;
 
-  color: ${(props) => (props.active ? `${props.theme.colors.primary}` : '#c2c6dc')};
+  color: ${props => (props.active ? `${props.theme.colors.primary}` : '#c2c6dc')};
   &:hover {
-    color: ${(props) => props.theme.colors.primary};
+    color: ${props => props.theme.colors.primary};
   }
   &:hover svg {
-    fill: ${(props) => props.theme.colors.primary};
+    fill: ${props => props.theme.colors.primary};
   }
 `;
 
@@ -173,14 +173,10 @@ const TabNavLine = styled.span<{ top: number }>`
   width: 2px;
   height: 48px;
   transform: scaleX(1);
-  top: ${(props) => props.top}px;
+  top: ${props => props.top}px;
 
-  background: linear-gradient(
-    30deg,
-    ${(props) => props.theme.colors.primary},
-    ${(props) => props.theme.colors.primary}
-  );
-  box-shadow: 0 0 8px 0 ${(props) => props.theme.colors.primary};
+  background: linear-gradient(30deg, ${props => props.theme.colors.primary}, ${props => props.theme.colors.primary});
+  box-shadow: 0 0 8px 0 ${props => props.theme.colors.primary};
   display: block;
   position: absolute;
   transition: all 0.2s ease;
@@ -271,36 +267,36 @@ type ResetPasswordTabProps = {
 };
 const ResetPasswordTab: React.FC<ResetPasswordTabProps> = ({ onResetPassword }) => {
   const [active, setActive] = useState(true);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-    reset,
-  } = useForm<{ password: string; passwordConfirm: string }>();
+  const { register, handleSubmit, errors, setError, reset } = useForm<{ password: string; password_confirm: string }>();
   const done = () => {
     reset();
     setActive(true);
   };
   return (
     <form
-      onSubmit={handleSubmit((data) => {
-        if (data.password !== data.passwordConfirm) {
+      onSubmit={handleSubmit(data => {
+        if (data.password !== data.password_confirm) {
           setError('password', { message: 'Passwords must match!', type: 'error' });
-          setError('passwordConfirm', { message: 'Passwords must match!', type: 'error' });
+          setError('password_confirm', { message: 'Passwords must match!', type: 'error' });
         } else {
           onResetPassword(data.password, done);
         }
       })}
     >
-      <PasswordInput width="100%" {...register('password', { required: 'Password is required' })} label="Password" />
+      <PasswordInput
+        width="100%"
+        ref={register({ required: 'Password is required' })}
+        label="Password"
+        name="password"
+      />
       {errors.password && <FormError>{errors.password.message}</FormError>}
       <PasswordInput
         width="100%"
-        {...register('passwordConfirm', { required: 'Password is required' })}
+        ref={register({ required: 'Password is required' })}
         label="Password (confirm)"
+        name="password_confirm"
       />
-      {errors.passwordConfirm && <FormError>{errors.passwordConfirm.message}</FormError>}
+      {errors.password_confirm && <FormError>{errors.password_confirm.message}</FormError>}
       <SettingActions>
         <SaveButton disabled={!active} type="submit">
           Save Change
@@ -311,7 +307,7 @@ const ResetPasswordTab: React.FC<ResetPasswordTabProps> = ({ onResetPassword }) 
 };
 
 type UserInfoData = {
-  fullName: string;
+  full_name: string;
   bio: string;
   initials: string;
   email: string;
@@ -333,11 +329,7 @@ const UserInfoTab: React.FC<UserInfoTabProps> = ({
   onChangeUserInfo,
 }) => {
   const [active, setActive] = useState(true);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<UserInfoData>();
+  const { register, handleSubmit, errors } = useForm<UserInfoData>();
   const done = () => {
     setActive(true);
   };
@@ -349,24 +341,26 @@ const UserInfoTab: React.FC<UserInfoTabProps> = ({
         profile={profile.profileIcon}
       />
       <form
-        onSubmit={handleSubmit((data) => {
+        onSubmit={handleSubmit(data => {
           setActive(false);
           onChangeUserInfo(data, done);
         })}
       >
         <UserInfoInput
-          {...register('fullName', { required: 'Full name is required' })}
+          ref={register({ required: 'Full name is required' })}
+          name="full_name"
           defaultValue={profile.fullName}
           width="100%"
           label="Name"
         />
-        {errors.fullName && <FormError>{errors.fullName.message}</FormError>}
+        {errors.full_name && <FormError>{errors.full_name.message}</FormError>}
         <UserInfoInput
           defaultValue={profile.profileIcon && profile.profileIcon.initials ? profile.profileIcon.initials : ''}
-          {...register('initials', {
+          ref={register({
             required: 'Initials is required',
             pattern: { value: INITIALS_PATTERN, message: 'Intials must be between two to four characters' },
           })}
+          name="initials"
           width="100%"
           label="Initials "
         />
@@ -374,7 +368,8 @@ const UserInfoTab: React.FC<UserInfoTabProps> = ({
         <UserInfoInput disabled defaultValue={profile.username ?? ''} width="100%" label="Username " />
         <UserInfoInput
           width="100%"
-          {...register('email', {
+          name="email"
+          ref={register({
             required: 'Email is required',
             pattern: { value: EMAIL_PATTERN, message: 'Must be a valid email' },
           })}
@@ -382,7 +377,7 @@ const UserInfoTab: React.FC<UserInfoTabProps> = ({
           label="Email"
         />
         {errors.email && <FormError>{errors.email.message}</FormError>}
-        <UserInfoInput width="100%" {...register('bio')} defaultValue={profile.bio ?? ''} label="Bio" />
+        <UserInfoInput width="100%" name="bio" ref={register()} defaultValue={profile.bio ?? ''} label="Bio" />
         {errors.bio && <FormError>{errors.bio.message}</FormError>}
         <SettingActions>
           <SaveButton disabled={!active} type="submit">

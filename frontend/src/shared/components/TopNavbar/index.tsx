@@ -7,17 +7,12 @@ import { RoleCode } from 'shared/generated/graphql';
 import NOOP from 'shared/utils/noop';
 import { useHistory } from 'react-router';
 import {
-  ProjectInfo,
-  NavbarLink,
   TaskcafeLogo,
   TaskcafeTitle,
   ProjectFinder,
   LogoContainer,
   NavSeparator,
   IconContainerWrapper,
-  ProjectSwitch,
-  ProjectNameWrapper,
-  ProjectNameSpan,
   ProjectNameTextarea,
   InviteButton,
   GlobalActions,
@@ -35,8 +30,6 @@ import {
   ProfileNameSecondary,
   ProjectMember,
   ProjectMembers,
-  ProjectSwitchInner,
-  NotificationCount,
 } from './Styles';
 
 type IconContainerProps = {
@@ -80,7 +73,7 @@ const ProjectHeading: React.FC<ProjectHeadingProps> = ({
 }) => {
   const [isEditProjectName, setEditProjectName] = useState(false);
   const [projectName, setProjectName] = useState(initialProjectName);
-  const $projectName = useRef<HTMLInputElement>(null);
+  const $projectName = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     if (isEditProjectName && $projectName && $projectName.current) {
       $projectName.current.focus();
@@ -91,7 +84,7 @@ const ProjectHeading: React.FC<ProjectHeadingProps> = ({
     setProjectName(initialProjectName);
   }, [initialProjectName]);
 
-  const onProjectNameChange = (event: React.FormEvent<HTMLInputElement>): void => {
+  const onProjectNameChange = (event: React.FormEvent<HTMLTextAreaElement>): void => {
     setProjectName(event.currentTarget.value);
   };
   const onProjectNameBlur = () => {
@@ -113,17 +106,14 @@ const ProjectHeading: React.FC<ProjectHeadingProps> = ({
   return (
     <>
       {isEditProjectName ? (
-        <ProjectNameWrapper>
-          <ProjectNameSpan>{projectName}</ProjectNameSpan>
-          <ProjectNameTextarea
-            ref={$projectName}
-            onChange={onProjectNameChange}
-            onKeyDown={onProjectNameKeyDown}
-            onBlur={onProjectNameBlur}
-            spellCheck={false}
-            value={projectName}
-          />
-        </ProjectNameWrapper>
+        <ProjectNameTextarea
+          ref={$projectName}
+          onChange={onProjectNameChange}
+          onKeyDown={onProjectNameKeyDown}
+          onBlur={onProjectNameBlur}
+          spellCheck={false}
+          value={projectName}
+        />
       ) : (
         <ProjectName
           onClick={() => {
@@ -145,7 +135,7 @@ const ProjectHeading: React.FC<ProjectHeadingProps> = ({
       </ProjectSettingsButton>
       {onFavorite && (
         <ProjectSettingsButton onClick={() => onFavorite()}>
-          <Star filled width={16} height={16} color="#c2c6dc" />
+          <Star width={16} height={16} color="#c2c6dc" />
         </ProjectSettingsButton>
       )}
     </>
@@ -186,11 +176,9 @@ type NavBarProps = {
   projectMembers?: Array<TaskUser> | null;
   projectInvitedMembers?: Array<InvitedUser> | null;
 
-  hasUnread: boolean;
   onRemoveFromBoard?: (userID: string) => void;
   onMemberProfile?: ($targetRef: React.RefObject<HTMLElement>, memberID: string) => void;
   onInvitedMemberProfile?: ($targetRef: React.RefObject<HTMLElement>, email: string) => void;
-  onMyTasksClick: () => void;
 };
 
 const NavBar: React.FC<NavBarProps> = ({
@@ -205,7 +193,6 @@ const NavBar: React.FC<NavBarProps> = ({
   onOpenProjectFinder,
   onFavorite,
   onSetTab,
-  hasUnread,
   projectInvitedMembers,
   onChangeRole,
   name,
@@ -214,7 +201,6 @@ const NavBar: React.FC<NavBarProps> = ({
   onProfileClick,
   onNotificationClick,
   onDashboardClick,
-  onMyTasksClick,
   user,
   projectMembers,
   onOpenSettings,
@@ -226,50 +212,43 @@ const NavBar: React.FC<NavBarProps> = ({
   };
   const history = useHistory();
   const { showPopup } = usePopup();
-  const $finder = useRef<HTMLDivElement>(null);
   return (
     <NavbarWrapper>
       <NavbarHeader>
         <ProjectActions>
-          <ProjectSwitch ref={$finder} onClick={(e) => onOpenProjectFinder($finder)}>
-            <ProjectSwitchInner>
-              <TaskcafeLogo innerColor="#9f46e4" outerColor="#000" width={32} height={32} />
-            </ProjectSwitchInner>
-          </ProjectSwitch>
-          <ProjectInfo>
-            <ProjectMeta>
-              {name && (
-                <ProjectHeading
-                  onFavorite={onFavorite}
-                  onOpenSettings={onOpenSettings}
-                  name={name}
-                  canEditProjectName={canEditProjectName}
-                  onSaveProjectName={onSaveName}
-                />
-              )}
-            </ProjectMeta>
+          <ProjectMeta>
             {name && (
-              <ProjectTabs>
-                {menuType &&
-                  menuType.map((menu, idx) => {
-                    return (
-                      <ProjectTab
-                        key={menu.name}
-                        to={menu.link}
-                        exact
-                        onClick={() => {
-                          // TODO
-                        }}
-                      >
-                        {menu.name}
-                      </ProjectTab>
-                    );
-                  })}
-              </ProjectTabs>
+              <ProjectHeading
+                onFavorite={onFavorite}
+                onOpenSettings={onOpenSettings}
+                name={name}
+                canEditProjectName={canEditProjectName}
+                onSaveProjectName={onSaveName}
+              />
             )}
-          </ProjectInfo>
+          </ProjectMeta>
+          {name && (
+            <ProjectTabs>
+              {menuType &&
+                menuType.map((menu, idx) => {
+                  return (
+                    <ProjectTab
+                      key={menu.name}
+                      to={menu.link}
+                      exact
+                      onClick={() => {
+                        // TODO
+                      }}
+                    >
+                      {menu.name}
+                    </ProjectTab>
+                  );
+                })}
+            </ProjectTabs>
+          )}
         </ProjectActions>
         <LogoContainer to="/">
+          <TaskcafeLogo width={32} height={32} />
           <TaskcafeTitle>Taskcafé</TaskcafeTitle>
         </LogoContainer>
         <GlobalActions>
@@ -307,7 +286,7 @@ const NavBar: React.FC<NavBarProps> = ({
                 ))}
                 {canInviteUser && (
                   <InviteButton
-                    onClick={($target) => {
+                    onClick={$target => {
                       if (onInviteUser) {
                         onInviteUser($target);
                       }
@@ -324,18 +303,17 @@ const NavBar: React.FC<NavBarProps> = ({
           <ProjectFinder onClick={onOpenProjectFinder} variant="gradient">
             Projects
           </ProjectFinder>
-          <NavbarLink to="">
+          <IconContainer onClick={() => onDashboardClick()}>
             <HomeDashboard width={20} height={20} />
-          </NavbarLink>
-          <NavbarLink to="/tasks">
+          </IconContainer>
+          <IconContainer disabled onClick={NOOP}>
             <CheckCircle width={20} height={20} />
-          </NavbarLink>
+          </IconContainer>
           <IconContainer disabled onClick={NOOP}>
             <ListUnordered width={20} height={20} />
           </IconContainer>
-          <IconContainer onClick={onNotificationClick}>
-            <Bell width={20} height={20} />
-            {hasUnread && <NotificationCount />}
+          <IconContainer disabled onClick={onNotificationClick}>
+            <Bell color="#c2c6dc" size={20} />
           </IconContainer>
           <IconContainer disabled onClick={NOOP}>
             <BarChart width={20} height={20} />

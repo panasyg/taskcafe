@@ -3,10 +3,19 @@ package utils
 import (
 	"crypto/tls"
 
-	"github.com/jordanknott/taskcafe/internal/config"
 	hermes "github.com/matcornic/hermes/v2"
 	gomail "gopkg.in/mail.v2"
 )
+
+type EmailConfig struct {
+	Host               string
+	Port               int
+	From               string
+	Username           string
+	Password           string
+	SiteURL            string
+	InsecureSkipVerify bool
+}
 
 type EmailInvite struct {
 	ConfirmToken string
@@ -14,11 +23,11 @@ type EmailInvite struct {
 	To           string
 }
 
-func SendEmailInvite(cfg config.EmailConfig, invite EmailInvite) error {
+func SendEmailInvite(config EmailConfig, invite EmailInvite) error {
 	h := hermes.Hermes{
 		Product: hermes.Product{
 			Name: "Taskscafe",
-			Link: cfg.SiteURL,
+			Link: config.SiteURL,
 			Logo: "https://github.com/JordanKnott/taskcafe/raw/master/.github/taskcafe-full.png",
 		},
 	}
@@ -36,7 +45,7 @@ func SendEmailInvite(cfg config.EmailConfig, invite EmailInvite) error {
 						Color:     "#7367F0", // Optional action button color
 						TextColor: "#FFFFFF",
 						Text:      "Register your account",
-						Link:      cfg.SiteURL + "/register?confirmToken=" + invite.ConfirmToken,
+						Link:      config.SiteURL + "/register?confirmToken=" + invite.ConfirmToken,
 					},
 				},
 			},
@@ -58,7 +67,7 @@ func SendEmailInvite(cfg config.EmailConfig, invite EmailInvite) error {
 	m := gomail.NewMessage()
 
 	// Set E-Mail sender
-	m.SetHeader("From", cfg.From)
+	m.SetHeader("From", config.From)
 
 	// Set E-Mail receivers
 	m.SetHeader("To", invite.To)
@@ -71,11 +80,11 @@ func SendEmailInvite(cfg config.EmailConfig, invite EmailInvite) error {
 	m.AddAlternative("text/plain", emailBodyPlain)
 
 	// Settings for SMTP server
-	d := gomail.NewDialer(cfg.Host, cfg.Port, cfg.Username, cfg.Password)
+	d := gomail.NewDialer(config.Host, config.Port, config.Username, config.Password)
 
 	// This is only needed when SSL/TLS certificate is not valid on server.
 	// In production this should be set to false.
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: cfg.InsecureSkipVerify}
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: config.InsecureSkipVerify}
 
 	// Now send E-Mail
 	if err := d.DialAndSend(m); err != nil {

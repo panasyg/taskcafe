@@ -15,7 +15,7 @@ import (
 
 func newResetPasswordCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "reset-password <username> <password>",
+		Use:   "reset-password",
 		Short: "Resets password of the specified user",
 		Long:  "If the user forgets its password you can reset it with this command.",
 		Args:  cobra.ExactArgs(2),

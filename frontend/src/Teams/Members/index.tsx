@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import Input from 'shared/components/Input';
 import updateApolloCache from 'shared/utils/cache';
 import produce from 'immer';
-import polling from 'shared/utils/polling';
 import Button from 'shared/components/Button';
-import { useCurrentUser } from 'App/context';
+import { useCurrentUser, PermissionLevel, PermissionObjectType } from 'App/context';
 import Select from 'shared/components/Select';
 import {
   useGetTeamQuery,
@@ -36,7 +35,7 @@ const UserMember = styled(Member)`
   padding: 4px 0;
   cursor: pointer;
   &:hover {
-    background: ${(props) => mixin.rgba(props.theme.colors.bg.primary, 0.4)};
+    background: ${props => mixin.rgba(props.theme.colors.bg.primary, 0.4)};
   }
   border-radius: 6px;
 `;
@@ -57,8 +56,8 @@ const UserManagementPopup: React.FC<UserManagementPopupProps> = ({ users, teamMe
       <SearchInput width="100%" variant="alternate" placeholder="Email address or name" name="search" />
       <TeamMemberList>
         {users
-          .filter((u) => u.id !== teamMembers.find((p) => p.id === u.id)?.id)
-          .map((user) => (
+          .filter(u => u.id !== teamMembers.find(p => p.id === u.id)?.id)
+          .map(user => (
             <UserMember
               key={user.id}
               onCardMemberClick={() => onAddTeamMember(user.id)}
@@ -116,7 +115,7 @@ export const MiniProfileActionItem = styled.span<{ disabled?: boolean }>`
   position: relative;
   text-decoration: none;
 
-  ${(props) =>
+  ${props =>
     props.disabled
       ? css`
           user-select: none;
@@ -137,7 +136,7 @@ export const Content = styled.div`
 
 export const CurrentPermission = styled.span`
   margin-left: 4px;
-  color: ${(props) => mixin.rgba(props.theme.colors.text.secondary, 0.4)};
+  color: ${props => mixin.rgba(props.theme.colors.text.secondary, 0.4)};
 `;
 
 export const Separator = styled.div`
@@ -148,13 +147,13 @@ export const Separator = styled.div`
 
 export const WarningText = styled.span`
   display: flex;
-  color: ${(props) => mixin.rgba(props.theme.colors.text.primary, 0.4)};
+  color: ${props => mixin.rgba(props.theme.colors.text.primary, 0.4)};
   padding: 6px;
 `;
 
 export const DeleteDescription = styled.div`
   font-size: 14px;
-  color: ${(props) => props.theme.colors.text.primary};
+  color: ${props => props.theme.colors.text.primary};
 `;
 
 export const RemoveMemberButton = styled(Button)`
@@ -221,13 +220,13 @@ const TeamRoleManagerPopup: React.FC<TeamRoleManagerPopupProps> = ({
         <MiniProfileActions>
           <MiniProfileActionWrapper>
             {permissions
-              .filter((p) => (subject.role && subject.role.code === 'owner') || p.code !== 'owner')
-              .map((perm) => (
+              .filter(p => (subject.role && subject.role.code === 'owner') || p.code !== 'owner')
+              .map(perm => (
                 <MiniProfileActionItem
                   disabled={subject.role && perm.code !== subject.role.code && !canChangeRole}
                   key={perm.code}
                   onClick={() => {
-                    if (subject.role && perm.code !== subject.role.code) {
+                    if (onChangeRole && subject.role && perm.code !== subject.role.code) {
                       switch (perm.code) {
                         case 'owner':
                           onChangeRole(RoleCode.Owner);
@@ -276,8 +275,8 @@ const TeamRoleManagerPopup: React.FC<TeamRoleManagerPopupProps> = ({
               <Select
                 label="New projects owner"
                 value={orphanedProjectOwner}
-                onChange={(value) => setOrphanedProjectOwner(value)}
-                options={members.filter((m) => m.id !== subject.id).map((m) => ({ label: m.fullName, value: m.id }))}
+                onChange={value => setOrphanedProjectOwner(value)}
+                options={members.filter(m => m.id !== subject.id).map(m => ({ label: m.fullName, value: m.id }))}
               />
             </>
           )}
@@ -307,14 +306,14 @@ const MemberItemOption = styled(Button)`
 `;
 
 const MemberList = styled.div`
-  border-top: 1px solid ${(props) => props.theme.colors.border};
+  border-top: 1px solid ${props => props.theme.colors.border};
 `;
 
 const MemberListItem = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  border-bottom: 1px solid ${(props) => props.theme.colors.border};
+  border-bottom: 1px solid ${props => props.theme.colors.border};
   min-height: 40px;
   padding: 12px 0 12px 40px;
   position: relative;
@@ -338,11 +337,11 @@ const MemberProfile = styled(TaskAssignee)`
 `;
 
 const MemberItemName = styled.p`
-  color: ${(props) => props.theme.colors.text.secondary};
+  color: ${props => props.theme.colors.text.secondary};
 `;
 
 const MemberItemUsername = styled.p`
-  color: ${(props) => props.theme.colors.text.primary};
+  color: ${props => props.theme.colors.text.primary};
 `;
 
 const MemberListHeader = styled.div`
@@ -351,12 +350,12 @@ const MemberListHeader = styled.div`
 `;
 const ListTitle = styled.h3`
   font-size: 18px;
-  color: ${(props) => props.theme.colors.text.secondary};
+  color: ${props => props.theme.colors.text.secondary};
   margin-bottom: 12px;
 `;
 const ListDesc = styled.span`
   font-size: 16px;
-  color: ${(props) => props.theme.colors.text.primary};
+  color: ${props => props.theme.colors.text.primary};
 `;
 const FilterSearch = styled(Input)`
   margin: 0;
@@ -388,11 +387,11 @@ const FilterTabItem = styled.li`
   font-weight: 700;
   text-decoration: none;
   padding: 6px 8px;
-  color: ${(props) => props.theme.colors.text.primary};
+  color: ${props => props.theme.colors.text.primary};
   &:hover {
     border-radius: 6px;
-    background: ${(props) => props.theme.colors.primary};
-    color: ${(props) => props.theme.colors.text.secondary};
+    background: ${props => props.theme.colors.primary};
+    color: ${props => props.theme.colors.text.secondary};
   }
 `;
 
@@ -423,9 +422,9 @@ const Members: React.FC<MembersProps> = ({ teamID }) => {
   const { loading, data } = useGetTeamQuery({
     variables: { teamID },
     fetchPolicy: 'cache-and-network',
-    pollInterval: polling.MEMBERS,
+    pollInterval: 3000,
   });
-  const { user } = useCurrentUser();
+  const { user, setUserRoles } = useCurrentUser();
   const warning =
     'You can’t leave because you are the only admin. To make another user an admin, click their avatar, select “Change permissions…”, and select “Admin”.';
   const [createTeamMember] = useCreateTeamMemberMutation({
@@ -433,8 +432,8 @@ const Members: React.FC<MembersProps> = ({ teamID }) => {
       updateApolloCache<GetTeamQuery>(
         client,
         GetTeamDocument,
-        (cache) =>
-          produce(cache, (draftCache) => {
+        cache =>
+          produce(cache, draftCache => {
             if (response.data) {
               draftCache.findTeam.members.push({
                 ...response.data.createTeamMember.teamMember,
@@ -447,16 +446,26 @@ const Members: React.FC<MembersProps> = ({ teamID }) => {
       );
     },
   });
-  const [updateTeamMemberRole] = useUpdateTeamMemberRoleMutation();
+  const [updateTeamMemberRole] = useUpdateTeamMemberRoleMutation({
+    onCompleted: r => {
+      if (user) {
+        setUserRoles(
+          produce(user.roles, draftRoles => {
+            draftRoles.teams.set(r.updateTeamMemberRole.teamID, r.updateTeamMemberRole.member.role.code);
+          }),
+        );
+      }
+    },
+  });
   const [deleteTeamMember] = useDeleteTeamMemberMutation({
     update: (client, response) => {
       updateApolloCache<GetTeamQuery>(
         client,
         GetTeamDocument,
-        (cache) =>
-          produce(cache, (draftCache) => {
+        cache =>
+          produce(cache, draftCache => {
             draftCache.findTeam.members = cache.findTeam.members.filter(
-              (member) => member.id !== response.data?.deleteTeamMember.userID,
+              member => member.id !== response.data?.deleteTeamMember.userID,
             );
           }),
         { teamID },
@@ -482,15 +491,15 @@ const Members: React.FC<MembersProps> = ({ teamID }) => {
             </ListDesc>
             <ListActions>
               <FilterSearch width="250px" variant="alternate" placeholder="Filter by name" />
-              {true && ( // TODO: add permission check
+              {user.isAdmin(PermissionLevel.TEAM, PermissionObjectType.TEAM, data.findTeam.id) && (
                 <InviteMemberButton
-                  onClick={($target) => {
+                  onClick={$target => {
                     showPopup(
                       $target,
                       <UserManagementPopup
                         users={data.users}
                         teamMembers={data.findTeam.members}
-                        onAddTeamMember={(userID) => {
+                        onAddTeamMember={userID => {
                           createTeamMember({ variables: { userID, teamID } });
                         }}
                       />,
@@ -504,7 +513,7 @@ const Members: React.FC<MembersProps> = ({ teamID }) => {
             </ListActions>
           </MemberListHeader>
           <MemberList>
-            {data.findTeam.members.map((member) => (
+            {data.findTeam.members.map(member => (
               <MemberListItem>
                 <MemberProfile showRoleIcons size={32} onMemberProfile={NOOP} member={member} />
                 <MemberListItemDetails>
@@ -515,23 +524,22 @@ const Members: React.FC<MembersProps> = ({ teamID }) => {
                   <MemberItemOption variant="flat">On 2 projects</MemberItemOption>
                   <MemberItemOption
                     variant="outline"
-                    onClick={($target) => {
+                    onClick={$target => {
                       showPopup(
                         $target,
                         <TeamRoleManagerPopup
-                          currentUserID={user ?? ''}
+                          currentUserID={user.id ?? ''}
                           subject={member}
                           members={data.findTeam.members}
                           warning={member.role && member.role.code === 'owner' ? warning : null}
-                          // canChangeRole={user.isAdmin(PermissionLevel.TEAM, PermissionObjectType.TEAM, teamID)} TODO: add permission check
-                          canChangeRole
-                          onChangeRole={(roleCode) => {
+                          canChangeRole={user.isAdmin(PermissionLevel.TEAM, PermissionObjectType.TEAM, teamID)}
+                          onChangeRole={roleCode => {
                             updateTeamMemberRole({ variables: { userID: member.id, teamID, roleCode } });
                           }}
                           onRemoveFromTeam={
                             member.role && member.role.code === 'owner'
                               ? undefined
-                              : (newOwnerID) => {
+                              : newOwnerID => {
                                   deleteTeamMember({ variables: { teamID, newOwnerID, userID: member.id } });
                                   hidePopup();
                                 }
