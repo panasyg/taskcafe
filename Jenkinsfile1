@@ -1,7 +1,8 @@
 pipeline {
     agent { label 'tc_ag' }
 
-    def root = tool type: 'go', name: '1.15.1'
+    tools { go '1.15.1' }
+    tools {nodejs "node"}
 
     environment {
     dockerimagename = "panasyg/taskcafe"
@@ -9,8 +10,6 @@ pipeline {
   }
 
   stages {
-
-
     stage('Checkout Source') {
       steps {
         echo "current build number: ${currentBuild.number}"
@@ -20,46 +19,42 @@ pipeline {
 
     stage('Test source code') {
       steps {
-        echo "Starting tesing"
-        
-          withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
-          sh 'go version'
-        } 
-        echo "Test passed succesfully"
-      }
-    }
+          sh 'npm install'
 
-    stage('Build image') {
-      steps{
-        script {
-          dockerImage = docker.build dockerimagename
         }
-      }
     }
 
-    stage('Pushing Image') {
-      environment {
-               registryCredential = 'dockerhubpanasyg'
-           }
-      steps{
-        script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-            dockerImage.push("v${currentBuild.number}")
-          }
-        }
-      }
-    }
+    // stage('Build image') {
+    //   steps{
+    //     script {
+    //       dockerImage = docker.build dockerimagename
+    //     }
+    //   }
+    // }
 
-    stage('Deploy to K8s')
-		{
+    // stage('Pushing Image') {
+    //   environment {
+    //            registryCredential = 'dockerhubpanasyg'
+    //        }
+    //   steps{
+    //     script {
+    //       docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+    //         dockerImage.push("v${currentBuild.number}")
+    //       }
+    //     }
+    //   }
+    // }
+
+    // stage('Deploy to K8s')
+		// {
       
-      steps{
-			script{
-				try{
-					  sh "ssh jenkins@10.26.0.165 /usr/local/bin/kubectl set image deployment/taskcafe-app taskcafe=panasyg/taskcafe:v${currentBuild.number} --kubeconfig /home/unpriv/.kube/config"
-					}catch(error) {}
-				}
-			}
-    }
+    //   steps{
+		// 	script{
+		// 		try{
+		// 			  sh "ssh jenkins@10.26.0.165 /usr/local/bin/kubectl set image deployment/taskcafe-app taskcafe=panasyg/taskcafe:v${currentBuild.number} --kubeconfig /home/unpriv/.kube/config"
+		// 			}catch(error) {}
+		// 		}
+		// 	}
+    // }
 	}
 }
