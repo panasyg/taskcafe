@@ -28,37 +28,37 @@ pipeline {
         }
     }
 
-    // stage('Build image') {
-    //   steps{
-    //     script {
-    //       dockerImage = docker.build dockerimagename
-    //     }
-    //   }
-    // }
+    stage('Build image') {
+      steps{
+        script {
+          dockerImage = docker.build dockerimagename
+        }
+      }
+    }
 
-    // stage('Pushing Image') {
-    //   environment {
-    //            registryCredential = 'dockerhubpanasyg'
-    //        }
-    //   steps{
-    //     script {
-    //       docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-    //         dockerImage.push("v${currentBuild.number}")
-    //       }
-    //     }
-    //   }
-    // }
+    stage('Pushing Image') {
+      environment {
+               registryCredential = 'dockerhubpanasyg'
+           }
+      steps{
+        script {
+          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+            dockerImage.push("v${currentBuild.number}")
+          }
+        }
+      }
+    }
 
-    // stage('Deploy to K8s')
-		// {
+    stage('Deploy to K8s')
+		{
       
-    //   steps{
-		// 	script{
-		// 		try{
-		// 			  sh "ssh jenkins@10.26.0.165 /usr/local/bin/kubectl set image deployment/taskcafe-app taskcafe=panasyg/taskcafe:v${currentBuild.number} --kubeconfig /home/unpriv/.kube/config"
-		// 			}catch(error) {}
-		// 		}
-		// 	}
-    // }
+      steps{
+			script{
+				try{
+					  sh "ssh jenkins@10.26.0.165 /usr/local/bin/kubectl set image deployment/taskcafe-app taskcafe=panasyg/taskcafe:v${currentBuild.number} --kubeconfig /home/unpriv/.kube/config"
+					}catch(error) {}
+				}
+			}
+    }
 	}
 }
