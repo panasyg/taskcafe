@@ -46,9 +46,8 @@ pipeline {
 			script{
 				try{
 					  sh "ssh jenkins@10.26.0.165 /usr/local/bin/kubectl set image deployment/taskcafe-app taskcafe=panasyg/taskcafe:v${currentBuild.number} --kubeconfig /home/unpriv/.kube/config"
-					}catch(error) {}
-				}
+				}catch(error) {}
 			}
-    }
-	}
+		}
+  }
 }
