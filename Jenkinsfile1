@@ -19,8 +19,8 @@ pipeline {
 
     stage('Test source code') {
       steps {
-          sh 'npm install'
-
+          sh 'npm install -g yarn'
+          yarn 'install'
         }
     }
 
