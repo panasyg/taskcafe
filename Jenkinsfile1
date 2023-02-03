@@ -1,6 +1,5 @@
 pipeline {
     agent { label 'tc_ag' }
-
     tools { 
             go '1.15.1' ;
             nodejs "node14.9.0"
