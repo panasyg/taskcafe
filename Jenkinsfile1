@@ -8,6 +8,12 @@ pipeline {
 
   stages {
 
+
+    stage('Test source code') {
+      steps {
+        sh "go -v"
+      }
+    }
     stage('Checkout Source') {
       steps {
         echo "current build number: ${currentBuild.number}"
@@ -38,10 +44,11 @@ pipeline {
 
     stage('Deploy to K8s')
 		{
+      
       steps{
 			script{
 				try{
-					sh 'ssh unpriv@10.26.0.165 kubectl apply -f /home/unpriv/taskcafe-k8s'
+					sh " ssh unpriv@10.26.0.165 kubectl set image deployment/taskcafe-app taskcafe=panasyg/taskcafe:v${currentBuild.number}"
 					}catch(error) {}
 					}
 				  }
