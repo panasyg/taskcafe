@@ -9,6 +9,7 @@ pipeline {
   stages {
 
     stage('Checkout Source') {
+      echo "Job 1 number: ${job1Result.number}"
       steps {
         git 'https://github.com/panasyg/taskcafe.git'
       }
